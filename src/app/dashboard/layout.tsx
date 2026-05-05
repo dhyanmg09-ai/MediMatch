@@ -36,7 +36,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="h-16 flex items-center justify-between px-6 border-b border-border">
           <Link href="/" className="flex items-center gap-2 text-primary">
             <Activity className="h-6 w-6" />
-            <span className="font-bold text-lg text-foreground">MediMatch<span className="text-primary">.AI</span></span>
+            <span className="font-bold text-lg text-foreground">MediMatch</span>
           </Link>
           <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-muted-foreground hover:text-foreground">
             <X className="h-5 w-5" />
@@ -45,6 +45,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         <nav className="p-4 space-y-1">
           {navigation.map((item) => {
+            if (item.name === 'Admin Panel') return null; // Admin Panel moved to separate portal
+            
             const isActive = pathname === item.href
             return (
               <Link
@@ -71,16 +73,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           })}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
-          <div className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-muted transition-colors cursor-pointer">
-            <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs border border-primary/30">
-              AD
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border bg-card">
+          <div className="flex items-center gap-3 px-3 py-2 rounded-md transition-colors cursor-default border border-transparent">
+            <div className="h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs border bg-muted text-muted-foreground border-border">
+              HU
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">Admin User</p>
-              <p className="text-xs text-muted-foreground truncate">National Coordinator</p>
+              <p className="text-sm font-medium text-foreground truncate">Hospital User</p>
+              <p className="text-xs text-muted-foreground truncate">Transplant Surgeon</p>
             </div>
-            <Settings className="h-4 w-4 text-muted-foreground" />
           </div>
         </div>
       </aside>

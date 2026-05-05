@@ -5,7 +5,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
-  title: 'MediMatch | Incentive-Aware Organ Allocation',
+  title: 'MediMatch',
   description: 'Production-level enterprise-grade web application UI for real-time organ allocation.',
 }
 

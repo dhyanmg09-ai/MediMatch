@@ -12,7 +12,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 text-primary">
             <Activity className="h-6 w-6" />
-            <span className="font-bold text-xl tracking-tight text-foreground">MediMatch<span className="text-primary">.AI</span></span>
+            <span className="font-bold text-xl tracking-tight text-foreground">MediMatch</span>
           </div>
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
             <Link href="#features" className="hover:text-foreground transition-colors">Features</Link>
@@ -142,7 +142,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="py-8 border-t border-border text-center text-sm text-muted-foreground">
-        <p>© 2026 MediMatch AI. For demonstration and simulation purposes only.</p>
+        <p>© 2026 MediMatch. For demonstration and simulation purposes only.</p>
       </footer>
     </div>
   )

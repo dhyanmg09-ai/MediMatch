@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { Heart, Activity, Clock, ShieldAlert, CheckCircle2, XCircle, AlertCircle, TrendingDown } from 'lucide-react'
+import { Heart, Activity, Clock, ShieldAlert, CheckCircle2, XCircle, AlertCircle, TrendingDown, Network } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 // Mock Data
