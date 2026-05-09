@@ -10,8 +10,6 @@ const navigation = [
   { name: 'Matching Engine', href: '/dashboard/matching', icon: Network },
   { name: 'Hospital Trust', href: '/dashboard/hospital-trust', icon: ShieldCheck },
   { name: 'Simulation Mode', href: '/dashboard/simulation', icon: Activity },
-  { name: 'Donor Portal', href: '/dashboard/donor', icon: Heart },
-  { name: 'Admin Panel', href: '/dashboard/admin', icon: Sliders },
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -57,34 +55,37 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </button>
         </div>
 
-        <nav className="p-4 space-y-1">
-          {navigation.map((item) => {
-            if (item.name === 'Admin Panel') return null; // Admin Panel moved to separate portal
-            
-            const isActive = pathname === item.href
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`
-                  flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors
-                  ${isActive 
-                    ? 'bg-primary/10 text-primary border border-primary/20' 
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                  }
-                `}
-              >
-                <item.icon className={`h-5 w-5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} />
-                {item.name}
-                {item.name === 'Live Allocation' && (
-                  <span className="ml-auto flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-destructive opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive"></span>
-                  </span>
-                )}
-              </Link>
-            )
-          })}
+        <nav className="p-4 space-y-6">
+          <div>
+            <p className="px-3 text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Clinical Operations</p>
+            <div className="space-y-1">
+              {navigation.map((item) => {
+                const isActive = pathname === item.href
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`
+                      flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors
+                      ${isActive 
+                        ? 'bg-primary/10 text-primary border border-primary/20' 
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                      }
+                    `}
+                  >
+                    <item.icon className={`h-5 w-5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} />
+                    {item.name}
+                    {item.name === 'Live Allocation' && (
+                      <span className="ml-auto flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-destructive opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive"></span>
+                      </span>
+                    )}
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
         </nav>
 
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border bg-card">
@@ -121,22 +122,48 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1 bg-warning/10 text-warning border border-warning/20 rounded-full text-xs font-medium">
-              <Activity className="h-3 w-3" />
+            <div className="flex items-center gap-2 px-3 py-1 bg-warning/10 text-warning border border-warning/20 rounded-full text-xs font-medium shadow-[0_0_15px_-5px_rgba(245,158,11,0.3)] animate-pulse-slow">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-warning opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-warning"></span>
+              </span>
               System Status: High Load
             </div>
-            <button className="relative p-2 text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-muted">
-              <Bell className="h-5 w-5" />
+            <button className="relative p-2 text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-muted group">
+              <Bell className="h-5 w-5 group-hover:rotate-12 transition-transform" />
               <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive border-2 border-card"></span>
             </button>
           </div>
         </header>
 
         {/* Page Content */}
-        <div className="flex-1 overflow-auto p-4 lg:p-8">
+        <div className="flex-1 overflow-auto p-4 lg:p-8 custom-scrollbar">
           {children}
         </div>
       </main>
+
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: hsl(var(--muted));
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: hsl(var(--muted-foreground) / 0.5);
+        }
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+      `}</style>
     </div>
   )
 }

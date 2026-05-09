@@ -64,18 +64,19 @@ function DecayTimer({ extractionTime, maxHours }: { extractionTime: string, maxH
 
       const hrs = Math.floor(remainingMs / (1000 * 60 * 60))
       const mins = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60))
-      setTimeLeft(`${hrs}h ${mins}m`)
+      const secs = Math.floor((remainingMs % (1000 * 60)) / 1000)
+      setTimeLeft(`${hrs}h ${mins}m ${secs}s`)
     }
 
     updateTimer()
-    const interval = setInterval(updateTimer, 60000) // Update every minute
+    const interval = setInterval(updateTimer, 1000) // Update every second
     return () => clearInterval(interval)
   }, [extractionTime, maxHours])
 
   const getColor = (v: number) => {
-    if (v > 60) return 'bg-success'
-    if (v > 30) return 'bg-warning'
-    return 'bg-destructive'
+    if (v > 60) return 'bg-success shadow-[0_0_10px_rgba(34,197,94,0.3)]'
+    if (v > 30) return 'bg-warning shadow-[0_0_10px_rgba(245,158,11,0.3)]'
+    return 'bg-destructive shadow-[0_0_15px_rgba(239,68,68,0.5)]'
   }
 
   const getTextColor = (v: number) => {
@@ -85,23 +86,23 @@ function DecayTimer({ extractionTime, maxHours }: { extractionTime: string, maxH
   }
 
   return (
-    <div className="space-y-1.5">
-      <div className="flex justify-between text-xs font-medium">
-        <span className="text-muted-foreground flex items-center gap-1">
+    <div className="space-y-2">
+      <div className="flex justify-between text-xs font-bold uppercase tracking-wider">
+        <span className="text-muted-foreground flex items-center gap-1.5">
           <TrendingDown className="h-3 w-3" />
-          Viability Decay
+          Viability
         </span>
-        <span className={`${getTextColor(viability)} font-bold flex items-center gap-1`}>
+        <span className={`${getTextColor(viability)} flex items-center gap-1.5 tabular-nums ${viability < 30 ? 'animate-pulse' : ''}`}>
           <Clock className="h-3 w-3" />
-          {timeLeft} left
+          {timeLeft}
         </span>
       </div>
-      <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+      <div className="h-2 w-full bg-muted/50 rounded-full overflow-hidden border border-white/5">
         <motion.div 
           className={`h-full ${getColor(viability)}`}
           initial={{ width: '100%' }}
           animate={{ width: `${viability}%` }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 0.5 }}
         />
       </div>
     </div>

@@ -64,31 +64,36 @@ export default function DonorLayout({ children }: { children: React.ReactNode })
             </div>
           </div>
 
-          <nav className="space-y-1">
-            {donorNavigation.map((item) => {
-              const isActive = pathname === item.href
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`
-                    flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all
-                    ${isActive 
-                      ? 'bg-blue-600/10 text-blue-400 border border-blue-600/20 shadow-[0_0_15px_-5px_rgba(59,130,246,0.5)]' 
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
-                    }
-                  `}
-                >
-                  <item.icon className={`h-5 w-5 ${isActive ? 'text-blue-400' : 'text-gray-500'}`} />
-                  <span className="flex-1">{item.name}</span>
-                  {item.badge && (
-                    <span className="bg-green-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              )
-            })}
+          <nav className="space-y-6">
+            <div>
+              <p className="px-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Donor Services</p>
+              <div className="space-y-1">
+                {donorNavigation.map((item) => {
+                  const isActive = pathname === item.href
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`
+                        flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all
+                        ${isActive 
+                          ? 'bg-blue-600/10 text-blue-400 border border-blue-600/20 shadow-[0_0_15px_-5px_rgba(59,130,246,0.5)]' 
+                          : 'text-gray-400 hover:text-white hover:bg-white/5'
+                        }
+                      `}
+                    >
+                      <item.icon className={`h-5 w-5 ${isActive ? 'text-blue-400' : 'text-gray-500'}`} />
+                      <span className="flex-1">{item.name}</span>
+                      {item.badge && (
+                        <span className="bg-green-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                          {item.badge}
+                        </span>
+                      )}
+                    </Link>
+                  )
+                })}
+              </div>
+            </div>
           </nav>
         </div>
 
@@ -107,7 +112,7 @@ export default function DonorLayout({ children }: { children: React.ReactNode })
       <main className="flex-1 flex flex-col min-w-0">
         {/* Header */}
         <header className="h-16 flex items-center justify-between px-8 border-b border-gray-800/30">
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Donor Dashboard (Sample)</p>
+          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Donor Dashboard</p>
           
           <div className="flex items-center gap-6">
             <button className="relative text-gray-400 hover:text-white transition-colors">

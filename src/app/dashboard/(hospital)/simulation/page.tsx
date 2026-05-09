@@ -10,30 +10,32 @@ export default function SimulationPage() {
     { id: 1, time: '00:00', msg: 'Simulation initialized. Ready for organ generation.', type: 'info' }
   ])
 
-  const addLog = () => {
-    if (!isRunning) return
+  const addLog = (msg: string, type: 'info' | 'success' | 'warning') => {
     const now = new Date()
-    const timeString = `${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`
-    
-    const events = [
-      { msg: 'New organ (Kidney O+) generated.', type: 'info' as const },
-      { msg: 'Traditional System: Waitlisted at regional center.', type: 'warning' as const },
-      { msg: 'Intelligent System: Allocated to shadow hospital (Mass General).', type: 'success' as const },
-      { msg: 'Decay threshold warning. Re-ranking shadow queue.', type: 'warning' as const },
-    ]
-    const randomEvent = events[Math.floor(Math.random() * events.length)]
-    
-    setLogs(prev => [{ id: Date.now(), time: timeString, ...randomEvent }, ...prev].slice(0, 8))
+    const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`
+    setLogs(prev => [{ id: Date.now() + Math.random(), time: timeString, msg, type }, ...prev].slice(0, 10))
   }
 
-  // Simulation logic: starts/stops the interval based on isRunning state
   useEffect(() => {
-    let interval: any
-    if (isRunning) {
-      interval = setInterval(addLog, 2500)
-    }
+    if (!isRunning) return
+
+    const events = [
+      { msg: 'New organ (Heart O+) detected at Regional Center.', type: 'info' as const },
+      { msg: 'Traditional System: Attempting regional matching...', type: 'warning' as const },
+      { msg: 'MediMatch: Shadow queue synchronized across 4 nodes.', type: 'success' as const },
+      { msg: 'Incentive Engine: Trust score validated for Mass General.', type: 'success' as const },
+      { msg: 'Traditional System: Response timeout. Escalating...', type: 'warning' as const },
+      { msg: 'MediMatch: Optimal match identified (Brigham Women\'s).', type: 'success' as const },
+      { msg: 'Decay analysis: 98.4% viability maintained via pre-allocation.', type: 'info' as const },
+    ]
+
+    const interval = setInterval(() => {
+      const randomEvent = events[Math.floor(Math.random() * events.length)]
+      addLog(randomEvent.msg, randomEvent.type)
+    }, 3000)
+
     return () => clearInterval(interval)
-  }, [isRunning, addLog])
+  }, [isRunning])
 
   return (
     <div className="space-y-6 flex flex-col h-[calc(100vh-8rem)]">
