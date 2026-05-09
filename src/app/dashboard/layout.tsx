@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Activity, LayoutDashboard, Network, ShieldCheck, Settings, Bell, Search, Menu, X, Sliders } from 'lucide-react'
+import { Activity, LayoutDashboard, Network, ShieldCheck, Settings, Bell, Search, Menu, X, Sliders, Heart } from 'lucide-react'
 import { useState } from 'react'
 
 const navigation = [
@@ -10,6 +10,7 @@ const navigation = [
   { name: 'Matching Engine', href: '/dashboard/matching', icon: Network },
   { name: 'Hospital Trust', href: '/dashboard/hospital-trust', icon: ShieldCheck },
   { name: 'Simulation Mode', href: '/dashboard/simulation', icon: Activity },
+  { name: 'Donor Portal', href: '/dashboard/donor', icon: Heart },
   { name: 'Admin Panel', href: '/dashboard/admin', icon: Sliders },
 ]
 

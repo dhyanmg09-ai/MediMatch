@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Play, Pause, FastForward, RotateCcw, GitCompare, Heart, Activity } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -26,14 +26,14 @@ export default function SimulationPage() {
     setLogs(prev => [{ id: Date.now(), time: timeString, ...randomEvent }, ...prev].slice(0, 8))
   }
 
-  // Very simple mock interval for the simulation
-  useState(() => {
+  // Simulation logic: starts/stops the interval based on isRunning state
+  useEffect(() => {
     let interval: any
     if (isRunning) {
       interval = setInterval(addLog, 2500)
     }
     return () => clearInterval(interval)
-  })
+  }, [isRunning, addLog])
 
   return (
     <div className="space-y-6 flex flex-col h-[calc(100vh-8rem)]">
