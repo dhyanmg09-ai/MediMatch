@@ -20,11 +20,11 @@ export default function LandingPage() {
             <Link href="#security" className="hover:text-foreground transition-colors">Security</Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="text-sm font-medium text-muted-foreground hover:text-foreground hidden sm:block">
+            <Link href="/gateway" className="text-sm font-medium text-muted-foreground hover:text-foreground hidden sm:block">
               Login
             </Link>
             <Link 
-              href="/dashboard" 
+              href="/gateway" 
               className="bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2"
             >
               Launch System
@@ -86,10 +86,10 @@ export default function LandingPage() {
                 className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
               >
                 <Link 
-                  href="/dashboard"
+                  href="/gateway"
                   className="w-full sm:w-auto px-8 py-4 bg-primary text-primary-foreground rounded-md font-semibold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-[0_0_40px_-10px_rgba(59,130,246,0.5)]"
                 >
-                  Enter Dashboard
+                  Enter Portal
                   <ArrowRight className="h-5 w-5" />
                 </Link>
                 <Link 

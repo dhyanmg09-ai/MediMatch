@@ -1,9 +1,9 @@
 "use client"
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Activity, LayoutDashboard, Network, ShieldCheck, Settings, Bell, Search, Menu, X, Sliders, Heart } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useLayoutEffect } from 'react'
 
 const navigation = [
   { name: 'Live Allocation', href: '/dashboard', icon: LayoutDashboard },
@@ -16,7 +16,20 @@ const navigation = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isAuthorized, setIsAuthorized] = useState(false)
+
+  useLayoutEffect(() => {
+    const hasAccess = localStorage.getItem('medimatch_hospital_access') === 'true'
+    if (!hasAccess) {
+      router.replace('/gateway')
+    } else {
+      setIsAuthorized(true)
+    }
+  }, [router])
+
+  if (!isAuthorized) return null;
 
   return (
     <div className="min-h-screen bg-background flex">
