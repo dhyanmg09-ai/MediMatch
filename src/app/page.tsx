@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useLayoutEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Sliders, Save, RotateCcw, ShieldAlert, Terminal, Lock, Activity, ShieldCheck, Bell, Cpu, Globe, Database, Wifi, FileText, Search, Download } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts'
 
@@ -30,6 +31,22 @@ export default function AdminPortal() {
     trust: 10
   })
   const [hasChanges, setHasChanges] = useState(false)
+  const [isAuthorized, setIsAuthorized] = useState(false)
+
+  useLayoutEffect(() => {
+    const checkAccess = () => {
+      const hasAccess = localStorage.getItem('medimatch_admin_access') === 'true'
+      if (!hasAccess) {
+        window.location.href = '/gateway'
+      } else {
+        setIsAuthorized(true)
+      }
+    }
+    
+    checkAccess()
+  }, [])
+
+  if (!isAuthorized) return null;
 
   const handleWeightChange = (key: keyof typeof weights, value: number) => {
     setWeights(prev => ({ ...prev, [key]: value }))
@@ -154,93 +171,193 @@ export default function AdminPortal() {
           )}
 
           {activeTab === 'health' && (
-            <div className="space-y-8 animate-in fade-in duration-500">
-              <div>
-                <h1 className="text-3xl font-bold tracking-tight">System Health</h1>
-                <p className="text-muted-foreground mt-1">Infrastructure telemetry and node availability.</p>
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h1 className="text-3xl font-black uppercase tracking-tight text-white">Infrastructure Telemetry</h1>
+                  <p className="text-muted-foreground mt-1">Real-time health of the global allocation backbone.</p>
+                </div>
+                <div className="flex gap-2">
+                   <div className="px-4 py-2 bg-primary/10 border border-primary/20 rounded-xl flex items-center gap-2">
+                     <span className="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+                     <span className="text-[10px] font-black uppercase tracking-widest text-primary">Live Feed</span>
+                   </div>
+                </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 {[
-                  { label: 'Latency', value: '14ms', icon: Wifi, color: 'text-success' },
-                  { label: 'CPU Load', value: '52%', icon: Cpu, color: 'text-warning' },
-                  { label: 'Uptime', value: '99.9%', icon: Database, color: 'text-success' },
-                  { label: 'Nodes', value: '14', icon: Globe, color: 'text-primary' },
+                  { label: 'System Latency', value: '14.2ms', icon: Wifi, color: 'text-success', trend: '-2.4%' },
+                  { label: 'CPU Utilization', value: '42.8%', icon: Cpu, color: 'text-warning', trend: '+1.2%' },
+                  { label: 'Storage Sync', value: '99.99%', icon: Database, color: 'text-success', trend: 'STABLE' },
+                  { label: 'Active Nodes', value: '14/14', icon: Globe, color: 'text-primary', trend: 'ONLINE' },
                 ].map((stat, i) => (
-                  <div key={i} className="bg-card border border-border p-5 rounded-xl">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className={`p-2 rounded-lg bg-muted ${stat.color}`}><stat.icon className="h-4 w-4" /></div>
-                      <span className="text-xs font-medium text-muted-foreground">{stat.label}</span>
+                  <div key={i} className="bg-[#0a0a0a] border border-white/5 p-6 rounded-2xl hover:border-primary/30 transition-all group">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={`p-3 rounded-xl bg-white/5 ${stat.color} border border-white/5 group-hover:scale-110 transition-transform`}>
+                        <stat.icon className="h-5 w-5" />
+                      </div>
+                      <span className={`text-[10px] font-black ${stat.trend.startsWith('+') ? 'text-warning' : 'text-success'}`}>{stat.trend}</span>
                     </div>
-                    <div className="text-2xl font-bold">{stat.value}</div>
+                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{stat.label}</p>
+                    <p className="text-3xl font-black text-white mt-1 tabular-nums">{stat.value}</p>
                   </div>
                 ))}
               </div>
-              <div className="bg-card border border-border rounded-xl p-8 h-[400px]">
-                <h3 className="font-semibold mb-6">Traffic Analysis</h3>
-                <div className="h-64 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={healthData}>
-                      <defs><linearGradient id="p" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/><stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/></linearGradient></defs>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                      <XAxis dataKey="time" stroke="hsl(var(--muted-foreground))" fontSize={10} axisLine={false} />
-                      <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} axisLine={false} />
-                      <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }} />
-                      <Area type="monotone" dataKey="requests" stroke="hsl(var(--primary))" fill="url(#p)" />
-                    </AreaChart>
-                  </ResponsiveContainer>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 bg-[#0a0a0a] border border-white/5 rounded-2xl p-8 relative overflow-hidden group">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
+                  <h3 className="font-black uppercase tracking-widest text-xs text-gray-500 mb-8 flex items-center gap-2">
+                    <Activity className="h-4 w-4 text-primary" />
+                    Network Topology Map
+                  </h3>
+                  
+                  <div className="h-[400px] w-full relative flex items-center justify-center bg-[radial-gradient(circle_at_center,_#111_0%,_transparent_70%)]">
+                    {/* Topology Visualization */}
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <div className="absolute w-32 h-32 rounded-full border border-primary/20 animate-pulse"></div>
+                      <div className="absolute w-64 h-64 rounded-full border border-primary/10"></div>
+                      
+                      {/* Central Hub */}
+                      <div className="z-20 flex flex-col items-center">
+                        <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center shadow-[0_0_50px_-5px_rgba(59,130,246,0.5)] border border-primary-foreground/20">
+                          <Database className="h-8 w-8 text-white" />
+                        </div>
+                        <p className="mt-3 text-[10px] font-black uppercase tracking-widest text-primary">Core Node</p>
+                      </div>
+
+                      {/* Regional Nodes */}
+                      {[0, 60, 120, 180, 240, 300].map((angle, i) => {
+                        const radius = 140
+                        const x = Math.cos(angle * Math.PI / 180) * radius
+                        const y = Math.sin(angle * Math.PI / 180) * radius
+                        return (
+                          <div key={i} className="absolute transition-transform hover:scale-110 cursor-pointer group/node" style={{ transform: `translate(${x}px, ${y}px)` }}>
+                            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover/node:border-primary/50 group-hover/node:bg-primary/10 transition-all">
+                              <Globe className="h-5 w-5 text-gray-500 group-hover/node:text-primary" />
+                            </div>
+                            <div className="absolute top-12 left-1/2 -translate-x-1/2 whitespace-nowrap opacity-0 group-hover/node:opacity-100 transition-opacity">
+                              <span className="text-[9px] font-black uppercase tracking-widest bg-black px-2 py-1 rounded border border-white/10">Region {i+1} · OK</span>
+                            </div>
+                            <svg className="absolute top-1/2 left-1/2 -z-10 w-[200px] overflow-visible pointer-events-none" style={{ transform: `rotate(${angle + 180}deg)` }}>
+                              <line x1="0" y1="0" x2="140" y2="0" stroke="rgba(59,130,246,0.1)" strokeWidth="1" strokeDasharray="4 4" />
+                            </svg>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-8 flex flex-col">
+                  <h3 className="font-black uppercase tracking-widest text-xs text-gray-500 mb-8">Resource Load</h3>
+                  <div className="flex-1 w-full flex flex-col justify-center">
+                    <ResponsiveContainer width="100%" height={300}>
+                      <AreaChart data={healthData}>
+                        <defs>
+                          <linearGradient id="colorReq" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <XAxis dataKey="time" hide />
+                        <Tooltip 
+                          contentStyle={{ backgroundColor: '#050505', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                        />
+                        <Area type="monotone" dataKey="requests" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorReq)" />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                    <div className="mt-8 space-y-4">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-gray-500 font-bold uppercase tracking-widest">Database Health</span>
+                        <span className="text-success font-black">99%</span>
+                      </div>
+                      <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                        <div className="h-full w-[99%] bg-success shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                      </div>
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-gray-500 font-bold uppercase tracking-widest">Network Load</span>
+                        <span className="text-warning font-black">64%</span>
+                      </div>
+                      <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                        <div className="h-full w-[64%] bg-warning shadow-[0_0_10px_rgba(245,158,11,0.5)]"></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           )}
 
           {activeTab === 'audit' && (
-            <div className="space-y-8 animate-in fade-in duration-500">
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
               <div className="flex justify-between items-end">
                 <div>
-                  <h1 className="text-3xl font-bold tracking-tight">Audit Logs</h1>
-                  <p className="text-muted-foreground mt-1">Full history of system changes and access events.</p>
+                  <h1 className="text-3xl font-black uppercase tracking-tight text-white">Security Audit</h1>
+                  <p className="text-muted-foreground mt-1">Immutable ledger of system events and access logs.</p>
                 </div>
-                <button className="px-4 py-2 bg-card border border-border rounded-md text-sm font-medium flex items-center gap-2 hover:bg-muted transition-colors">
-                  <Download className="h-4 w-4" /> Export CSV
+                <button className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-black uppercase tracking-widest text-white transition-all flex items-center gap-2">
+                  <Download className="h-4 w-4" /> Export Ledger
                 </button>
               </div>
 
-              <div className="bg-card border border-border rounded-xl overflow-hidden">
-                <div className="p-4 border-b border-border bg-muted/30 flex justify-between">
-                  <div className="relative w-64">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <input type="text" placeholder="Filter logs..." className="bg-background border border-border rounded-md pl-9 pr-4 py-1.5 text-sm w-full outline-none focus:border-primary" />
+              <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
+                <div className="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center">
+                  <div className="relative w-80">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                    <input type="text" placeholder="Search logs..." className="bg-black/50 border border-white/10 rounded-xl pl-11 pr-4 py-2.5 text-sm w-full outline-none focus:border-primary transition-all" />
+                  </div>
+                  <div className="flex gap-2">
+                    <button className="px-3 py-1.5 bg-white/5 border border-white/5 rounded-lg text-[10px] font-black uppercase tracking-widest text-gray-500">All Events</button>
+                    <button className="px-3 py-1.5 bg-white/5 border border-white/5 rounded-lg text-[10px] font-black uppercase tracking-widest text-gray-500">Errors Only</button>
                   </div>
                 </div>
-                <table className="w-full text-sm text-left">
-                  <thead className="bg-muted/50 text-xs text-muted-foreground uppercase">
-                    <tr>
-                      <th className="px-6 py-4 font-medium">Event</th>
-                      <th className="px-6 py-4 font-medium">User</th>
-                      <th className="px-6 py-4 font-medium">Detail</th>
-                      <th className="px-6 py-4 font-medium">Time</th>
-                      <th className="px-6 py-4 font-medium">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {auditLogs.map(log => (
-                      <tr key={log.id} className="hover:bg-muted/20 transition-colors">
-                        <td className="px-6 py-4 font-semibold text-primary">{log.event}</td>
-                        <td className="px-6 py-4 text-muted-foreground font-mono text-xs">{log.user}</td>
-                        <td className="px-6 py-4">{log.detail}</td>
-                        <td className="px-6 py-4 text-muted-foreground">{log.time}</td>
-                        <td className="px-6 py-4">
-                          <span className={`px-2 py-1 rounded text-[10px] font-bold ${log.status === 'SUCCESS' ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'}`}>
-                            {log.status}
-                          </span>
-                        </td>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm text-left border-collapse">
+                    <thead className="bg-black/50 text-[10px] text-gray-500 uppercase tracking-[0.2em]">
+                      <tr>
+                        <th className="px-8 py-5 font-black">Event Type</th>
+                        <th className="px-8 py-5 font-black">Principal</th>
+                        <th className="px-8 py-5 font-black">Parameters</th>
+                        <th className="px-8 py-5 font-black">Timestamp</th>
+                        <th className="px-8 py-5 font-black">Verification</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {auditLogs.map(log => (
+                        <tr key={log.id} className="hover:bg-white/[0.02] transition-colors group">
+                          <td className="px-8 py-6">
+                            <span className="flex items-center gap-2 font-black text-white uppercase tracking-tighter">
+                              <div className={`w-1.5 h-1.5 rounded-full ${log.status === 'SUCCESS' ? 'bg-success' : 'bg-warning'}`}></div>
+                              {log.event}
+                            </span>
+                          </td>
+                          <td className="px-8 py-6 text-gray-400 font-mono text-[10px]">{log.user}</td>
+                          <td className="px-8 py-6 text-gray-300 text-xs">{log.detail}</td>
+                          <td className="px-8 py-6 text-gray-500 text-xs">{log.time}</td>
+                          <td className="px-8 py-6">
+                            <span className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border ${
+                              log.status === 'SUCCESS' 
+                                ? 'bg-success/5 text-success border-success/20' 
+                                : 'bg-warning/5 text-warning border-warning/20'
+                            }`}>
+                              {log.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}
+        </div>
+      </main>
+    </div>
+  )
+}
         </div>
       </main>
     </div>
