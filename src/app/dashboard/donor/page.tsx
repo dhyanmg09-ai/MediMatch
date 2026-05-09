@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { 
   Heart, 
   Users, 
@@ -121,10 +122,10 @@ export default function DonorDashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: "Lives You've Helped", value: "2", icon: Heart, color: "text-green-500", bg: "bg-green-500/10", detail: "People received a second chance thanks to you.", action: "View My Donations" },
-          { label: "Donations Made", value: "2", icon: Gift, color: "text-blue-500", bg: "bg-blue-500/10", detail: "You've registered 2 organ donations.", action: "View History" },
-          { label: "Organs Donated", value: "5", icon: Activity, color: "text-purple-500", bg: "bg-purple-500/10", detail: "Total organs donated across 2 donations.", action: "See Details" },
-          { label: "Lives Impacted", value: "5+", icon: Users, color: "text-orange-500", bg: "bg-orange-500/10", detail: "Lives positively impacted by your generosity.", action: "How It Works" },
+          { label: "Lives You've Helped", value: "2", icon: Heart, color: "text-green-500", bg: "bg-green-500/10", detail: "People received a second chance thanks to you.", action: "View My Donations", href: "/dashboard/donor/donations" },
+          { label: "Donations Made", value: "2", icon: Gift, color: "text-blue-500", bg: "bg-blue-500/10", detail: "You've registered 2 organ donations.", action: "View History", href: "/dashboard/donor/donations" },
+          { label: "Organs Donated", value: "5", icon: Activity, color: "text-purple-500", bg: "bg-purple-500/10", detail: "Total organs donated across 2 donations.", action: "See Details", href: "/dashboard/donor/stats" },
+          { label: "Lives Impacted", value: "5+", icon: Users, color: "text-orange-500", bg: "bg-orange-500/10", detail: "Lives positively impacted by your generosity.", action: "How It Works", href: "/dashboard/donor/resources" },
         ].map((stat, i) => (
           <div 
             key={i}
@@ -140,9 +141,12 @@ export default function DonorDashboard() {
               </div>
             </div>
             <p className="text-xs text-gray-400 mb-6 leading-relaxed">{stat.detail}</p>
-            <button className="text-xs font-bold text-blue-400 flex items-center gap-2 group-hover:gap-3 transition-all">
+            <Link 
+              href={stat.href}
+              className="text-xs font-bold text-blue-400 flex items-center gap-2 group-hover:gap-3 transition-all cursor-pointer"
+            >
               {stat.action} <ArrowRight className="h-3 w-3" />
-            </button>
+            </Link>
           </div>
         ))}
       </div>
@@ -195,9 +199,12 @@ export default function DonorDashboard() {
                 </div>
               ))}
             </div>
-            <button className="w-full mt-8 py-3 text-xs font-bold text-blue-400 hover:bg-blue-400/5 rounded-xl border border-blue-400/20 transition-all">
-              View All Donations →
-            </button>
+            <Link 
+              href="/dashboard/donor/donations"
+              className="w-full mt-8 py-3 text-xs font-bold text-blue-400 hover:bg-blue-400/5 rounded-xl border border-blue-400/20 transition-all flex items-center justify-center gap-2"
+            >
+              View All Donations <ArrowRight className="h-3 w-3" />
+            </Link>
           </div>
 
           {/* Your Impact Over Time */}
@@ -361,7 +368,12 @@ export default function DonorDashboard() {
                       <p className="text-[11px] font-bold text-white mb-0.5">Liver Donated Successfully</p>
                       <p className="text-[9px] text-gray-500 mb-2 font-bold uppercase tracking-wider">Today, 09:15 AM</p>
                       <p className="text-[10px] leading-relaxed text-gray-400">Your liver donation has been successfully transplanted to a patient in need.</p>
-                      <button className="text-[10px] font-bold text-blue-400 mt-3 flex items-center gap-1 group-hover:underline">View Details <ArrowRight className="h-3 w-3" /></button>
+                      <Link 
+                        href="/dashboard/donor/stats"
+                        className="text-[10px] font-bold text-blue-400 mt-3 flex items-center gap-1 group-hover:underline"
+                      >
+                        View Details <ArrowRight className="h-3 w-3" />
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -373,14 +385,15 @@ export default function DonorDashboard() {
           <div className="space-y-4">
             <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] px-2">Quick Actions</h3>
             {[
-              { icon: Calendar, label: "Update My Availability", detail: "Let us know if your availability has changed" },
-              { icon: ShieldCheck, label: "Health Check-in", detail: "Share your latest health information" },
-              { icon: UserPlus, label: "Refer a Friend", detail: "Encourage others to be life-savers" },
-              { icon: Download, label: "Download Donor Card", detail: "Show your commitment wherever you go" },
+              { icon: Calendar, label: "Update My Availability", detail: "Let us know if your availability has changed", href: "/dashboard/donor/preferences" },
+              { icon: ShieldCheck, label: "Health Check-in", detail: "Share your latest health information", href: "/dashboard/donor/health" },
+              { icon: UserPlus, label: "Refer a Friend", detail: "Encourage others to be life-savers", href: "/dashboard/donor/support" },
+              { icon: Download, label: "Download Donor Card", detail: "Show your commitment wherever you go", href: "/dashboard/donor/profile" },
             ].map((action, i) => (
-              <button 
+              <Link 
                 key={i}
-                className="w-full flex items-center gap-4 p-5 bg-[#111624] border border-gray-800/40 rounded-2xl hover:border-blue-500/30 hover:bg-[#161b2b] transition-all text-left group shadow-lg"
+                href={action.href}
+                className="w-full flex items-center gap-4 p-5 bg-[#111624] border border-gray-800/40 rounded-2xl hover:border-blue-500/30 hover:bg-[#161b2b] transition-all text-left group shadow-lg cursor-pointer"
               >
                 <div className="p-3 rounded-xl bg-[#161b2b] border border-gray-800/50 text-gray-500 group-hover:text-blue-400 group-hover:border-blue-400/20 transition-all">
                   <action.icon className="h-5 w-5" />
@@ -390,7 +403,7 @@ export default function DonorDashboard() {
                   <p className="text-[10px] text-gray-500 mt-0.5">{action.detail}</p>
                 </div>
                 <ChevronRight className="h-4 w-4 text-gray-700 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />
-              </button>
+              </Link>
             ))}
           </div>
 

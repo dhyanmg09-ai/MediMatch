@@ -97,14 +97,26 @@ export default function DonorLayout({ children }: { children: React.ReactNode })
           </nav>
         </div>
 
-        <div className="mt-auto p-6">
+        <div className="mt-auto p-6 space-y-4">
           <div className="bg-blue-600/5 border border-blue-600/10 rounded-xl p-4 text-center">
             <p className="text-sm font-bold mb-1">Need Help?</p>
             <p className="text-[10px] text-gray-500 mb-4">We're here for you 24/7</p>
-            <button className="w-full py-2 bg-[#161b2b] border border-gray-700 rounded-lg text-xs font-bold hover:bg-gray-800 transition-colors">
+            <Link 
+              href="/dashboard/donor/support"
+              className="block w-full py-2 bg-[#161b2b] border border-gray-700 rounded-lg text-xs font-bold hover:bg-gray-800 transition-colors text-center"
+            >
               Contact Support
-            </button>
+            </Link>
           </div>
+          <button 
+            onClick={() => {
+              localStorage.removeItem('medimatch_donor_access')
+              window.location.href = '/gateway'
+            }}
+            className="w-full py-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
+          >
+            Logout System
+          </button>
         </div>
       </aside>
 

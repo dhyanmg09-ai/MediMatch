@@ -1,7 +1,9 @@
 "use client"
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Gift, Clock, CheckCircle2, ArrowRight, Heart, Calendar } from 'lucide-react'
+import { Gift, Clock, CheckCircle2, ArrowRight, Heart, Calendar, ShieldCheck } from 'lucide-react'
+import { Modal } from '@/components/Modal'
 
 const DONATIONS = [
   {
@@ -25,6 +27,23 @@ const DONATIONS = [
 ]
 
 export default function DonationsPage() {
+  const [showUpdate, setShowUpdate] = useState(false)
+  const [isUpdating, setIsUpdating] = useState(false)
+  const [updated, setUpdated] = useState(false)
+
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsUpdating(true)
+    setTimeout(() => {
+      setIsUpdating(false)
+      setUpdated(true)
+      setTimeout(() => {
+        setShowUpdate(false)
+        setUpdated(false)
+      }, 2000)
+    }, 1500)
+  }
+
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
       <div>
@@ -87,11 +106,49 @@ export default function DonationsPage() {
             <p className="text-white font-bold">Register New Donation</p>
             <p className="text-gray-500 text-sm mt-1">Ready to save another life? Update your donor status.</p>
           </div>
-          <button className="mt-4 px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all shadow-[0_0_30px_-10px_rgba(59,130,246,0.5)]">
+          <button 
+            onClick={() => setShowUpdate(true)}
+            className="mt-4 px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all shadow-[0_0_30px_-10px_rgba(59,130,246,0.5)]"
+          >
             Update Registry
           </button>
         </motion.div>
       </div>
+
+      {/* Registry Update Modal */}
+      <Modal isOpen={showUpdate} onClose={() => setShowUpdate(false)} title="Update Donor Registry">
+        <form onSubmit={handleUpdate} className="space-y-6">
+          <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-start gap-4">
+            <ShieldCheck className="h-6 w-6 text-blue-500 mt-1" />
+            <p className="text-xs text-gray-400 leading-relaxed">
+              Updating your registry preferences ensures that your medical team has the most accurate information during the allocation process.
+            </p>
+          </div>
+          
+          <div className="space-y-4">
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block">Select Organs for Future Donation</label>
+            <div className="grid grid-cols-2 gap-3">
+              {['Heart', 'Liver', 'Kidneys', 'Lungs', 'Pancreas', 'Tissues'].map(organ => (
+                <div key={organ} className="flex items-center gap-3 p-3 bg-white/5 border border-white/5 rounded-xl">
+                  <input type="checkbox" defaultChecked className="h-4 w-4 rounded border-gray-700 bg-gray-800 text-blue-600 focus:ring-blue-500" />
+                  <span className="text-sm text-white">{organ}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button 
+            type="submit"
+            disabled={isUpdating || updated}
+            className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest transition-all ${
+              updated ? 'bg-green-500 text-white' : 'bg-blue-600 text-white hover:bg-blue-500'
+            }`}
+          >
+            {isUpdating ? 'Updating Registry...' : updated ? 'Registry Updated' : 'Confirm Updates'}
+          </button>
+        </form>
+      </Modal>
     </div>
   )
 }
+

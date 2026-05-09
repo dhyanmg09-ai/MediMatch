@@ -1,7 +1,9 @@
 "use client"
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { HeartPulse, Calendar, Activity, ClipboardCheck, ArrowRight } from 'lucide-react'
+import { HeartPulse, Calendar, Activity, ClipboardCheck, ArrowRight, Thermometer, Droplets, Zap } from 'lucide-react'
+import { Modal } from '@/components/Modal'
 
 const NEXT_CHECKS = [
   { label: 'Post-Op Follow-up', date: 'May 24, 2026', hospital: 'Cleveland Clinic', status: 'Upcoming' },
@@ -9,6 +11,24 @@ const NEXT_CHECKS = [
 ]
 
 export default function HealthPage() {
+  const [showDetails, setShowDetails] = useState(false)
+  const [showLog, setShowLog] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setTimeout(() => {
+      setIsSubmitting(false)
+      setSubmitted(true)
+      setTimeout(() => {
+        setShowLog(false)
+        setSubmitted(false)
+      }, 2000)
+    }, 1500)
+  }
+
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
       <div className="flex justify-between items-end">
@@ -44,7 +64,10 @@ export default function HealthPage() {
                 </div>
                 <h3 className="font-bold text-white mb-1">{check.label}</h3>
                 <p className="text-xs text-gray-500 mb-4">{check.date} · {check.hospital}</p>
-                <button className="w-full py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg text-xs font-bold transition-colors">
+                <button 
+                  onClick={() => setShowDetails(true)}
+                  className="w-full py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg text-xs font-bold transition-colors"
+                >
                   Check Details
                 </button>
               </motion.div>
@@ -60,12 +83,76 @@ export default function HealthPage() {
             </div>
             <p className="text-white font-bold">No issues reported</p>
             <p className="text-gray-500 text-sm mt-1 max-w-[200px]">Everything looks perfect. Continue following your recovery plan.</p>
-            <button className="mt-6 px-6 py-2 bg-white text-black rounded-lg text-xs font-black uppercase tracking-widest hover:bg-blue-400 transition-all">
+            <button 
+              onClick={() => setShowLog(true)}
+              className="mt-6 px-6 py-2 bg-white text-black rounded-lg text-xs font-black uppercase tracking-widest hover:bg-blue-400 transition-all"
+            >
               Submit Daily Log
             </button>
           </div>
         </div>
       </div>
+
+      {/* Details Modal */}
+      <Modal isOpen={showDetails} onClose={() => setShowDetails(false)} title="Check-up Details">
+        <div className="space-y-6">
+          <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+            <p className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-2">Appointment Info</p>
+            <p className="text-white font-bold">Post-Op Follow-up</p>
+            <p className="text-sm text-gray-400">May 24, 2026 at 10:30 AM</p>
+            <p className="text-sm text-gray-400">Cleveland Clinic · Main Building, 4th Floor</p>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Required Prep</p>
+              <p className="text-sm text-white">Fast 12h before</p>
+            </div>
+            <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Duration</p>
+              <p className="text-sm text-white">~45 minutes</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => setShowDetails(false)}
+            className="w-full py-4 bg-white text-black rounded-2xl font-black uppercase tracking-widest"
+          >
+            Add to Calendar
+          </button>
+        </div>
+      </Modal>
+
+      {/* Daily Log Modal */}
+      <Modal isOpen={showLog} onClose={() => setShowLog(false)} title="Daily Health Log">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-4">
+            <div>
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 block">Energy Levels</label>
+              <div className="grid grid-cols-5 gap-2">
+                {[1, 2, 3, 4, 5].map(v => (
+                  <button type="button" key={v} className="py-2 bg-white/5 border border-white/10 rounded-lg hover:border-blue-500 text-white font-bold">{v}</button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 block">Symptoms</label>
+              <textarea 
+                placeholder="Any pain, fatigue, or discomfort?"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm text-white focus:outline-none focus:border-blue-500 min-h-[100px]"
+              />
+            </div>
+          </div>
+          <button 
+            type="submit"
+            disabled={isSubmitting || submitted}
+            className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest transition-all ${
+              submitted ? 'bg-green-500 text-white' : 'bg-blue-600 text-white hover:bg-blue-500'
+            }`}
+          >
+            {isSubmitting ? 'Syncing...' : submitted ? 'Logged Successfully' : 'Submit Log'}
+          </button>
+        </form>
+      </Modal>
     </div>
   )
 }
+

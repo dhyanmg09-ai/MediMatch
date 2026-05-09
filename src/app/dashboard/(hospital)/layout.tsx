@@ -88,15 +88,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border bg-card">
-          <div className="flex items-center gap-3 px-3 py-2 rounded-md transition-colors cursor-default border border-transparent">
-            <div className="h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs border bg-muted text-muted-foreground border-border">
-              HU
+        <div className="mt-auto p-4 space-y-4">
+          <div className="bg-[#111420] border border-border rounded-xl p-4">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-10 w-10 rounded-full flex items-center justify-center font-bold text-xs border bg-muted text-muted-foreground border-border">
+                HU
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground truncate">Hospital User</p>
+                <p className="text-xs text-muted-foreground truncate">Transplant Surgeon</p>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">Hospital User</p>
-              <p className="text-xs text-muted-foreground truncate">Transplant Surgeon</p>
-            </div>
+            <button 
+              onClick={() => {
+                localStorage.removeItem('medimatch_hospital_access')
+                window.location.href = '/gateway'
+              }}
+              className="w-full py-2.5 bg-destructive/10 text-destructive border border-destructive/20 rounded-lg text-xs font-bold hover:bg-destructive hover:text-destructive-foreground transition-all uppercase tracking-widest"
+            >
+              Logout System
+            </button>
           </div>
         </div>
       </aside>
